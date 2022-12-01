@@ -1,0 +1,78 @@
+create database insurance151;
+show databases;
+use insurance151;
+show tables;
+drop table person;
+
+create table Person(
+driver_id char(10) primary key,
+name char(30) not null,
+address varchar(100) );
+create table car(
+reg_num char(10) primary key,
+model varchar(40),
+year int );
+create table accident (
+report_num int primary key,
+accident_date date,
+location varchar(100) );
+create table owns (
+driver_id char(10),
+reg_num char(10),
+primary key(driver_id , reg_num),
+foreign key (driver_id) references Person (driver_id),
+foreign key (reg_num) references car (reg_num) );
+create table participated (
+driver_id char(10),
+reg_num char(10),
+report_num int ,
+damage_amount int,
+primary key (driver_id, reg_num, damage_amount),
+foreign key (driver_id) references Person (driver_id),
+foreign key (reg_num) references car (reg_num),
+foreign key (report_num) references accident (report_num) );
+insert into person values("B01","Likith", "Jayanagar");
+insert into person values ("B02","Raju", "JP Nagar");
+insert into person values ("B03","Kaushik", "Katriguppe");
+insert into person values ("B04","Bharat", "Arekere");
+insert into person values ("B05","Pramod", "Konanakunte");
+select * from person;
+insert into car values ('KA51HR0303','Toyota','2011');
+insert into car values ('KA41Y0303','Lexus', '2012');
+insert into car values ('KA51EM0303','Nissan', '2013');
+insert into car values ('KA51MB0303','Benz', '2014');
+insert into car values ('KA05LR0303','Hummer', '2015');
+select * from car;
+insert into accident values (3690, '2011-10-10',"JP Nagar");
+insert into accident values ("3691", "2011/04/23","Jayanagar");
+insert into accident values ("3692", "2011/02/04","Arekere");
+insert into accident values ("3693", "2011/11/07","Banashankari");
+insert into accident values ("3694", "2011/10/29","Konanakunte");
+select * from accident;
+insert into owns values ('B01','KA51HR0303');
+insert into owns values ('B02','KA41Y0303');
+insert into owns values ('B03','KA51EM0303');
+insert into owns values ('B04','KA51MB0303');
+insert into owns values ('B05','KA05LR0303');
+select * from owns;
+insert into participated values ('B01','KA51HR0303', '3690', 23000);
+insert into participated values ('B02','KA41Y0303', '3691', 35000);
+insert into participated values ('B03','KA51EM0303', '3692', 49000);
+insert into participated values ('B04','KA51MB0303', '3693', 50000);
+insert into participated values ('B05','KA05LR0303', '3694', 65000);
+select * from participated;
+select accident_date,location from accident;
+select driver_id from participated
+where damage_amount>=25000; 
+update PARTICIPATED set damage_amount=25000 where reg_num="KA51HR0303" and report_num="3690";
+insert into ACCIDENT values(3695,"2008-07-03","SBM Colony");
+select * from car 
+order by year asc;
+select count(report_num)from CAR C,PARTICIPATED P where c.reg_num=p.reg_num and model="Lexus";
+select count(driver_id) from ACCIDENT A, PARTICIPATED P where a.report_num=p.report_num and accident_date like"2008-__-__";
+select * from participated
+order by damage_amount desc;
+select avg(damage_amount) from participated;
+select * from PERSON 
+where person.driver_id=participated.driver_id and damage_amount> 44800;
+select max(damage_amount) from PARTICIPATED;
